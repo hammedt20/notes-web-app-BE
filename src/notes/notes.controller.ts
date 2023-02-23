@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Query, UseGuards, Req } from '@nestjs/common';
 import { CreateNoteDto } from './dto/CreateNote.dto';
 import { UpdateNoteDto } from './dto/UpdateNote.dto';
 import { NotesService } from './notes.service';
 import { notes } from './schema/notes.schema';
 import { Query as ExpressQuery } from 'express-serve-static-core'
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('notes')
 export class NotesController {
@@ -15,8 +16,11 @@ export class NotesController {
     }
 
     @Post()
-    async createNote( @Body() note: CreateNoteDto,): Promise<notes>{
-        return this.noteService.create(note)
+    @UseGuards(AuthGuard())
+    async createNote( 
+        @Body() note: CreateNoteDto,
+        @Req() req): Promise<notes>{
+        return this.noteService.create(note, req.user)
     }
     
     @Get(':id')

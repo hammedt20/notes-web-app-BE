@@ -1,4 +1,6 @@
 import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
+import mongoose from "mongoose";
+import { user } from "../../auth/schema/user.schema";
 
 
 
@@ -12,6 +14,9 @@ export class notes {
 
     @Prop()
     description: string;
+
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "user" })
+    user: user;
 
 }
 
